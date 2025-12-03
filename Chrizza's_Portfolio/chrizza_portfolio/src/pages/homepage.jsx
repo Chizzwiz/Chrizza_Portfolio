@@ -27,6 +27,7 @@ const App = () => {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const typingIndexRef = useRef(0);
   const fullText = "Welcome! I'm Chrizza Arnie Gales";
+  const glassCardBackground = 'linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3))';
   
   const inlineStyles = {
     portfolioContainer: { 
@@ -34,7 +35,7 @@ const App = () => {
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
-      background: 'linear-gradient(135deg, #a8e6cf 0%, #b4e8d4 50%, #ffd3e1 100%)',
+      background: 'linear-gradient(135deg,rgb(129, 193, 170) 0%, #b4e8d4 50%, #ffd3e1 100%)',
       minHeight: '100vh',
       width: '100%'
     },
@@ -205,13 +206,17 @@ const App = () => {
       gap: 16, 
       padding: '32px 24px', 
       borderRadius: 24, 
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+      background: glassCardBackground,
       boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
       border: '2px solid rgba(125, 211, 192,0.15)',
       backdropFilter: 'blur(10px)',
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      minHeight: 320,
+      width: '100%',
+      height: 320,
+      boxSizing: 'border-box'
     },
     schoolLogo: { 
       width: 80, 
@@ -237,26 +242,40 @@ const App = () => {
       justifyContent: 'center'
     },
     skillsItem: { 
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
-      padding: '20px', 
-      borderRadius: 16, 
+      background: glassCardBackground,
+      padding: '16px', 
+      borderRadius: 18, 
       listStyle: 'none', 
-      boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+      boxShadow: '0 10px 28px rgba(15,23,42,0.08)',
       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
       border: '2px solid transparent',
       position: 'relative',
       overflow: 'hidden',
       cursor: 'pointer',
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      aspectRatio: '1'
+      boxSizing: 'border-box',
+      width: '100%',
+      aspectRatio: '1 / 1',
+      gap: 10
     },
     skillImage: {
-      width: '100%',
-      height: '100%',
+      width: '68%',
+      height: '68%',
       objectFit: 'contain',
-      borderRadius: 8
+      borderRadius: 8,
+      flexShrink: 0,
+      display: 'block',
+      margin: '0 auto'
+    },
+    skillLabel: {
+      marginTop: 10,
+      fontSize: '0.9rem',
+      fontWeight: 600,
+      color: '#0f172a',
+      textAlign: 'center'
     }
   };
   const [activeSection, setActiveSection] = useState('about');
@@ -277,14 +296,12 @@ const App = () => {
   };
   
   const handleNavClick = (id, e) => {
-    // Prevent full page reload from links and smoothly scroll to section
     if (e && e.preventDefault) e.preventDefault();
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     setActiveSection(id);
-    // Update the hash without causing reload
     try {
       if (window.history && window.history.pushState) {
         window.history.pushState(null, '', `#${id}`);
@@ -296,7 +313,6 @@ const App = () => {
     }
   };
 
-  // Intersection observer to reveal sections when they enter viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -326,7 +342,7 @@ const App = () => {
     {
       id: 'campuscart',
       title: 'CampusCart',
-      desc: 'Marketplace app for campus products.',
+      desc: 'An online marketplace designed to help students browse and manage campus-related products.',
       tech: 'Kotlin, JavaScript',
       image: marketplaceImage
     },
@@ -354,7 +370,6 @@ const App = () => {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText('chrizzaarniegales.official@gmail.com');
-      // Better feedback
       const btn = document.querySelector('[data-email-btn]');
       if (btn) {
         const originalText = btn.textContent;
@@ -370,7 +385,6 @@ const App = () => {
     }
   };
 
-  // Typing effect
   useEffect(() => {
     typingIndexRef.current = 0;
     setTypingText('');
@@ -385,7 +399,6 @@ const App = () => {
       }
     }, 100);
 
-    // Cursor blinking effect (starts after a delay to allow typing to complete)
     const cursorInterval = setInterval(() => {
       if (typingIndexRef.current >= fullText.length) {
         setShowCursor(prev => !prev);
@@ -398,17 +411,15 @@ const App = () => {
     };
   }, [fullText]);
 
-  // Window resize handler for responsive design
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // Set initial width
+    handleResize(); 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Mouse tracking for parallax effect
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -424,7 +435,6 @@ const App = () => {
     };
   }, []);
 
-  // Add CSS animations
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -725,7 +735,7 @@ const App = () => {
               onClick={(e) => handleNavClick('contact', e)} 
               style={{
                 ...(activeSection === 'contact' ? { ...inlineStyles.navLink, ...inlineStyles.navLinkActive } : inlineStyles.navLink),
-                fontSize: windowWidth <= 480 ? '12px' : windowWidth <= 768 ? '13px' : '15px',
+                fontSize: windowWidth <= 480 ? '8px 10px' : windowWidth <= 768 ? '13px' : '15px',
                 padding: windowWidth <= 480 ? '8px 10px' : windowWidth <= 768 ? '10px 12px' : '12px 16px'
               }}
               onMouseEnter={(e) => {
@@ -889,13 +899,16 @@ const App = () => {
               maxWidth: '1200px',
               width: '100%',
               margin: '0 auto',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              alignItems: 'stretch'
             }}
           >
             {[
               { logo: cituLogo, alt: "Cebu Institute of Technology logo", name: "Cebu Institute of Technology - University", degree: "Bachelor of Science in Information Technology", period: "August 2022 - Present" },
               { logo: cjcLogo, alt: "Cor Jesu College logo", name: "Cor Jesu College", degree: "Bachelor of Science in Computer Science", period: "August 2021 - May 2022" },
-              { logo: smspLogo, alt: "Saint Michael's School of Padada logo", name: "Saint Michael's School of Padada", degree: "Senior High School", period: "June 2017 - March 2019" }
+              { logo: smspLogo, alt: "Saint Michael's School of Padada logo", name: "Saint Michael's School of Padada", degree: "Senior High School", period: "June 2017 - March 2019" },
+              { logo: smspLogo, alt: "Saint Michael's School of Padada logo", name: "Saint Michael's School of Padada", degree: "Junior High School", period: "June 2013 - March 2017" },
+              { logo: pcesLogo, alt: "Padada Central Elementary School logo", name: "Padada Central Elementary School", degree: "Elementary", period: "June 2007 - March 2013" }
             ].map((school, idx) => (
               <div 
                 key={idx}
@@ -943,70 +956,6 @@ const App = () => {
             </div>
           </div>
             ))}
-            </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '24px',
-            maxWidth: '1200px',
-            margin: '24px auto 0',
-            flexWrap: 'wrap'
-          }}>
-            {[
-              { logo: smspLogo, alt: "Saint Michael's School of Padada logo", name: "Saint Michael's School of Padada", degree: "Junior High School", period: "June 2013 - March 2017" },
-              { logo: pcesLogo, alt: "Padada Central Elementary School logo", name: "Padada Central Elementary School", degree: "Elementary", period: "June 2007 - March 2013" }
-            ].map((school, idx) => {
-              const actualIdx = idx + 3; // Continue index from first row
-              return (
-                <div 
-                  key={actualIdx}
-                  style={{
-                    ...inlineStyles.schoolEntry,
-                    width: 'calc(33.333% - 16px)',
-                    minWidth: '280px',
-                    animation: visibleSections.has('educational-background') ? `scaleIn 0.6s ease-out ${actualIdx * 0.1}s both` : 'none',
-                    transform: hoveredSchool === actualIdx ? 'translateY(-12px) scale(1.03)' : 'none',
-                    boxShadow: hoveredSchool === actualIdx 
-                      ? '0 20px 60px rgba(125, 211, 192,0.3)' 
-                      : '0 8px 32px rgba(0,0,0,0.1)',
-                    borderColor: hoveredSchool === actualIdx ? 'rgba(125, 211, 192,0.4)' : 'rgba(125, 211, 192,0.15)'
-                  }}
-                  onMouseEnter={() => setHoveredSchool(actualIdx)}
-                  onMouseLeave={() => setHoveredSchool(null)}
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '4px',
-                    background: hoveredSchool === actualIdx 
-                      ? 'linear-gradient(90deg, #7dd3c0, #a8e6cf, #ffc0cb, #ffb3ba)' 
-                      : 'linear-gradient(90deg, transparent, transparent)',
-                    transition: 'all 0.4s ease'
-                  }} />
-                  <img 
-                    src={school.logo} 
-                    alt={school.alt} 
-                    style={{
-                      ...inlineStyles.schoolLogo,
-                      transform: hoveredSchool === actualIdx ? 'scale(1.15) rotate(5deg)' : 'scale(1)',
-                      background: hoveredSchool === actualIdx 
-                        ? 'linear-gradient(135deg, rgba(125, 211, 192,0.2), rgba(168, 230, 207,0.1))' 
-                        : 'linear-gradient(135deg, rgba(125, 211, 192,0.1), rgba(168, 230, 207,0.05))',
-                      boxShadow: hoveredSchool === actualIdx 
-                        ? '0 8px 24px rgba(125, 211, 192,0.3)' 
-                        : '0 4px 16px rgba(125, 211, 192,0.15)'
-                    }}
-                  />
-                  <div style={{ width: '100%', textAlign: 'center' }}>
-                    <h3 style={inlineStyles.schoolTextH3}>{school.name}</h3>
-                    <h4 style={inlineStyles.schoolTextH4}>{school.degree}</h4>
-                    <h5 style={inlineStyles.schoolTextH5}>{school.period}</h5>
-          </div>
-            </div>
-              );
-            })}
           </div>
         </section>
 
@@ -1060,6 +1009,16 @@ const App = () => {
                   alt={skill.name}
                   style={inlineStyles.skillImage}
                 />
+                <div
+                  style={{
+                    ...inlineStyles.skillLabel,
+                    visibility: ['Mobile App Development', 'Frontend Development', 'Quality Assurance', 'Web Design'].includes(skill.name)
+                      ? 'visible'
+                      : 'hidden'
+                  }}
+                >
+                  {skill.name}
+                </div>
               </div>
             ))}
           </div>
@@ -1108,7 +1067,7 @@ const App = () => {
                   onMouseEnter={() => setHoveredProject(p.id)} 
                   onMouseLeave={() => setHoveredProject(null)} 
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+                    background: glassCardBackground,
                     padding: '28px', 
                     borderRadius: 20, 
                     boxShadow: hovered 
@@ -1159,7 +1118,7 @@ const App = () => {
                           transition: 'transform 0.4s ease'
                         }}
                       />
-                    </div>
+                  </div>
                   )}
                   <h3 style={{ 
                     marginTop: 0, 
@@ -1186,41 +1145,6 @@ const App = () => {
                   }}>
                     <strong style={{ color: '#7dd3c0' }}>Tech Stack:</strong> {p.tech}
                   </p>
-                  <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-                    <a 
-                      href={`#projects`} 
-                      onClick={(e) => { e.preventDefault(); alert('Open demo or repo'); }} 
-                      style={{ 
-                        padding: '12px 20px', 
-                        background: hovered ? 'linear-gradient(135deg, #7dd3c0, #a8e6cf, #ffc0cb)' : '#7dd3c0',
-                        color: '#fff', 
-                        borderRadius: 12, 
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        transition: 'all 0.3s ease',
-                        boxShadow: hovered ? '0 4px 12px rgba(125, 211, 192,0.4)' : '0 2px 8px rgba(125, 211, 192,0.2)',
-                        transform: hovered ? 'scale(1.05)' : 'none'
-                      }}
-                    >
-                      View Project
-                    </a>
-                    <a 
-                      href={`#projects`} 
-                      onClick={(e) => { e.preventDefault(); alert('Open details'); }} 
-                      style={{ 
-                        padding: '12px 20px', 
-                        background: hovered ? 'rgba(125, 211, 192,0.1)' : '#f1f5f9', 
-                        color: '#0f172a', 
-                        borderRadius: 12, 
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        transition: 'all 0.3s ease',
-                        border: '2px solid rgba(125, 211, 192,0.2)'
-                      }}
-                    >
-                      Details
-                    </a>
-                  </div>
                 </div>
               );
             })}
@@ -1248,23 +1172,27 @@ const App = () => {
           </h2>
           <div style={{ 
             display: 'flex', 
-            gap: windowWidth <= 768 ? '20px' : 32, 
-            flexWrap: 'wrap',
+            flexDirection: 'column',
+            gap: windowWidth <= 768 ? '20px' : 24, 
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'stretch',
             maxWidth: '1000px',
             width: '100%',
             margin: '0 auto'
           }}>
             <div style={{ 
-              minWidth: windowWidth <= 768 ? '100%' : 280,
-              width: windowWidth <= 768 ? '100%' : 'auto',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+              width: '100%',
+              background: glassCardBackground,
               padding: windowWidth <= 768 ? '24px' : '32px',
               borderRadius: 20,
               boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
               border: '2px solid rgba(125, 211, 192,0.1)',
-              animation: visibleSections.has('certifications&awards') ? 'slideInLeft 0.6s ease-out both' : 'none'
+              animation: visibleSections.has('certifications&awards') ? 'slideInLeft 0.6s ease-out both' : 'none',
+              minHeight: 260,
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}>
               <h3 style={{ 
                 fontSize: '1.5rem',
@@ -1298,20 +1226,24 @@ const App = () => {
                     e.target.style.transform = 'translateX(0)';
                   }}
                   >
-                    ✓ {cert}
+                    ✨ {cert}
                   </li>
                 ))}
               </ul>
             </div>
             <div style={{ 
-              minWidth: windowWidth <= 768 ? '100%' : 280,
-              width: windowWidth <= 768 ? '100%' : 'auto',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+              width: '100%',
+              background: glassCardBackground,
               padding: windowWidth <= 768 ? '24px' : '32px',
               borderRadius: 20,
               boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
               border: '2px solid rgba(125, 211, 192,0.1)',
-              animation: visibleSections.has('certifications&awards') ? 'slideInRight 0.6s ease-out both' : 'none'
+              animation: visibleSections.has('certifications&awards') ? 'slideInRight 0.6s ease-out both' : 'none',
+              minHeight: 260,
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}>
               <h3 style={{ 
                 fontSize: '1.5rem',
@@ -1377,7 +1309,7 @@ const App = () => {
             maxWidth: '600px',
             width: '100%',
             margin: '0 auto',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+            background: glassCardBackground,
             padding: windowWidth <= 768 ? '30px 20px' : '40px',
             borderRadius: 24,
             boxShadow: '0 12px 48px rgba(0,0,0,0.1)',
@@ -1458,7 +1390,7 @@ const App = () => {
                   alignItems: 'center',
                   gap: '10px',
                   padding: '14px 28px',
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+                  background: glassCardBackground,
                   color: '#0f172a',
                   borderRadius: 12,
                   textDecoration: 'none',
@@ -1498,7 +1430,7 @@ const App = () => {
                   alignItems: 'center',
                   gap: '10px',
                   padding: '14px 28px',
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+                  background: glassCardBackground,
                   color: '#0f172a',
                   borderRadius: 12,
                   textDecoration: 'none',
