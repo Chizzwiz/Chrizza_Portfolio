@@ -20,7 +20,7 @@ import mobileAppLogo from '../assets/mobile app.jpg';
 import qaLogo from '../assets/qa.jpg';
 import webDesignLogo from '../assets/webdesign.jpg';
 
-const Homepage = () => {
+const App = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [typingText, setTypingText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
@@ -1537,4 +1537,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default App;
